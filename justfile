@@ -7,14 +7,17 @@ tunnel:
 tunnel-custom DOMAIN PORT:
 	localtunnel client --host https://localtunnel.me --subdomain {{DOMAIN}} --port {{PORT}}	
 
-test-api:
-	start powershell -ArgumentList "-noexit", "-command &{python src/app.py}"
+test-api: run-local-new
 	src/consumer.py
 
 run:
 	start powershell -ArgumentList "-noexit", "-command &{just tunnel}"
 	start powershell -ArgumentList "-noexit", "-command &{python src/app.py}"
-	
+			
 run-local:
-	start powershell -ArgumentList "-noexit", "-command &{python src/app.py}"
+	conda activate torch
+	python src/app.py
+	
+run-local-new:
+	start powershell -ArgumentList "-noexit", "-command &{just run-local}"
 	
