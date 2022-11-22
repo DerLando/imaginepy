@@ -16,7 +16,7 @@ parser.add_argument("steps", type=int, help="The number of steps to execute", de
 parser.add_argument("size", type=int, help="The size of the finished image, size x size", default=512)
 
 # worker disabled for testing purposes
-# worker = TorchWorker()
+worker = TorchWorker()
 
 def encode_image(image):
     """
@@ -38,8 +38,8 @@ class Imagination(Resource):
     def put(self, prompt):
         args = parser.parse_args(strict=True)
         args['prompt'] = prompt
-        args['image'] = encode_image(Image.new('RGB', (args['size'], args['size'])))
-        # args['image'] = "my_image"      
+        # args['image'] = encode_image(Image.new('RGB', (args['size'], args['size'])))
+        args['image'] = encode_image(worker.execute_prompt(prompt, steps=args['steps'])[0])
         # return {'test': prompt}
         return args
 

@@ -1,7 +1,11 @@
 import torch
 import random
-
 from diffusers import StableDiffusionPipeline
+from dotenv import load_dotenv
+import os
+
+if not load_dotenv("./.env"):
+    print("TorchWorker failed to load environment")
 
 MAX_SEED = 100000
 
@@ -12,7 +16,7 @@ class TorchWorker(object):
     for us.    
     """
     pipeline = None
-    model_path = "C:/Git/stable-diffusion-v1-5"
+    model_path = os.getenv("DIFFUSERS_PATH", "D:/Git/stable-diffusion-v-1-5")
     prompt = "A futuristic pavillon, hyperrealistic octane render"
     image_count = 1
     seeds = [42]
