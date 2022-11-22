@@ -19,7 +19,12 @@ class Imagination(Resource):
         # return {prompt: worker.execute_prompt(prompt, steps=10[0])
         return args
 
-
+    def put(self, prompt):
+        args = parser.parse_args(strict=True)
+        args['prompt'] = prompt
+        # return {'test': prompt}
+        return args
+        
 api.add_resource(Imagination, '/<string:prompt>')
 # api.add_resource(Imagination, '/')
 
