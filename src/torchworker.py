@@ -7,7 +7,8 @@ import os
 if not load_dotenv("./.env"):
     print("TorchWorker failed to load environment")
 
-MAX_SEED = 100000
+MIN_SEED = 1000000000
+MAX_SEED = 9999999999
 
 class TorchWorker(object):
     """
@@ -62,13 +63,13 @@ class TorchWorker(object):
         # itererate over seeds and create images
         for seed in self.seeds:
                         
-            self.images.append(self.pipeline(self.prompt, num_inference_steps=self.steps).images[0])
+            self.images.append(self.pipeline(self.prompt, num_inference_steps=self.steps, generator=torch.Generator().manual_seed(seed)).images[0])
         
         return self.images
         
     @staticmethod
     def create_seed():
-        return random.randint(0, MAX_SEED)
+        return random.randint(MIN_SEED, MAX_SEED)
         
         
     def _seed(self):

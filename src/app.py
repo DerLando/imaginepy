@@ -14,6 +14,7 @@ parser = reqparse.RequestParser()
 # parser.add_argument("prompt", type=str, help="The prompt to execute", required=True)
 parser.add_argument("steps", type=int, help="The number of steps to execute", default=50)
 parser.add_argument("size", type=int, help="The size of the finished image, size x size", default=512)
+parser.add_argument("seed", type=int, help="The seed to initialize the random generator", default=42)
 
 # worker disabled for testing purposes
 worker = TorchWorker()

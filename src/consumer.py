@@ -41,11 +41,17 @@ class Consumer(object):
     def _prompt_url(self, prompt):
         return f"{self.url}{prompt}"
 
-    def generate_image(self, prompt, steps=10):
+    def generate_image(self, prompt, steps=10, seed=None):
         """
         Generate an image with the given number of generation steps  
         """
-        return put(self._prompt_url(prompt), json={'steps': steps}).json()
+        args = {}
+        if seed is None:
+            seed = TorchWorker.generate_seed()
+        args['seed'] = seed
+        args['steps'] = steps
+        
+        return put(self._prompt_url(prompt), json=args).json()
         
 if __name__ == "__main__":
 
