@@ -27,3 +27,26 @@ pip install flask
 pip install flask-restful
 ```
   
+## Usage
+
+This library depends on some environment variables, which are **not** included in this repository.
+To make this work, create a `.env` file at the root level and have it expose the following environment variables
+
+```dotenv
+# ip and port of the server to run
+SERVER_IP = 127.0.0.1
+SERVER_PORT = 5000
+
+# path to your local version of the diffursers model
+DIFFUSERS_PATH = C:/path_to_your_diffusers_folder
+``` 
+
+If everything is setup correctly, you can just run the server in one command prompt and send requests to it in another one
+
+```sh
+# run in one cmd prompt
+python src/app.py  
+
+# run from another cmd prompt
+just test-api-custom "My cool prompt that I want to test"
+```
