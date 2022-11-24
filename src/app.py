@@ -30,6 +30,9 @@ def encode_image(image):
     # print(img_str)
     return img_str
 
+def create_image_filename(prompt, seed):
+    return f"{prompt.replace(' ', '_')}_{seed}_.png"
+
 class Imagination(Resource):
     def get(self, prompt):
         args = parser.parse_args(strict=True)
@@ -40,7 +43,8 @@ class Imagination(Resource):
         args = parser.parse_args(strict=True)
         args['prompt'] = prompt
         # args['image'] = encode_image(Image.new('RGB', (args['size'], args['size'])))
-        args['image'] = encode_image(worker.execute_prompt(prompt, steps=args['steps'])[0])
+        args['image'] = encode_image(worker.execute_prompt(prompt, steps=args['steps'], seeds=[args['seed']])[0])
+        args['filename'] = create_image_filename(prompt, args['seed'])
         # return {'test': prompt}
         return args
 

@@ -21,6 +21,19 @@ test-worker-custom PROMPT:
 	python src/consumer.py "{{PROMPT}}"
 	Invoke-Item generated/{{replace(PROMPT, ' ', '_')}}.png
 
+call-api PROMPT STEPS:
+	python src/consumer.py --prompt "{{PROMPT}}" --steps {{STEPS}}
+	just open-last
+
+call-api-seeded PROMPT STEPS SEED:
+	python src/consumer.py --prompt "{{PROMPT}}" --steps {{STEPS}} --seed {{SEED}}
+	just open-last
+
+open-last:
+	cd generated
+	Get-Childitem | sort lastwritetime | select -last 1 | Get-ItemPropertyValue -Name Name | Invoke-Item
+	cd ..
+
 run:
 	start powershell -ArgumentList "-noexit", "-command &{just tunnel}"
 	start powershell -ArgumentList "-noexit", "-command &{python src/app.py}"

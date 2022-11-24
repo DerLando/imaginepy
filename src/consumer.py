@@ -6,17 +6,19 @@ import os
 import sys
 from dotenv import load_dotenv
 from torchworker import TorchWorker
+import argparse
 
 if not load_dotenv("./.env"):
     print("Consumer failed to load environment")
 
 
 def decode_image(img_str):
+    """
+    Decode a base64 encoded image string back into an image
+    """
     # remove message fluff
     img_str = img_str.split('\'')[1]
     buffer = BytesIO(base64.b64decode(img_str))
-    print(buffer)
-    # TODO: Fix image loading issue
     try:
         image = Image.open(buffer)
     except:
@@ -50,7 +52,7 @@ class Consumer(object):
         """
         args = {}
         if seed is None:
-            seed = TorchWorker.generate_seed()
+            seed = TorchWorker.create_seed()
         args['seed'] = seed
         args['steps'] = steps
         return put(self._prompt_url(prompt), json=args).json()
@@ -58,19 +60,22 @@ class Consumer(object):
 
 if __name__ == "__main__":
 
-    args = sys.argv
-    if len(args) == 2:
-        prompt = args[1]
-    else:
-        print(args)
-        prompt = "A photo of an astronaut on mars"
+    parser = argparse.ArgumentParser(add_help=True)
+    parser.add_argument('-p', '--prompt', help="The text prompt to generate an image for", required=True)
+    parser.add_argument('-s', '--seed', help="The initial seed to use")
+    parser.add_argument('-n', '--steps', type=int, help="The number of steps to run the generation for", choices=range(10, 60), default=20)
+    parser.add_argument('-c', '--count', type=int, help="The number of images to generate", choices=[1, 2, 3, 4], default=1)
+
+    args = parser.parse_args()
+    if args.prompt == None:
+        sys.exit(1)
 
     consumer = Consumer()
-    result = consumer.generate_image(prompt, steps=20)
+    result = consumer.generate_image(args.prompt, args.steps, args.seed)
     for k, v in result.items():
         if k == 'image':
             image = decode_image(v)
-            filepath = f"./generated/{result['prompt'].replace(' ', '_')}.png"
+            filepath = f"./generated/{result['filename']}"
             filepath = os.path.abspath(filepath)
             print(filepath)
             image.save(filepath)

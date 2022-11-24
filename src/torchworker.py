@@ -63,7 +63,7 @@ class TorchWorker(object):
         # itererate over seeds and create images
         for seed in self.seeds:
                         
-            self.images.append(self.pipeline(self.prompt, num_inference_steps=self.steps, generator=torch.Generator().manual_seed(seed)).images[0])
+            self.images.append(self.pipeline(self.prompt, num_inference_steps=self.steps, generator=torch.Generator(device="cuda").manual_seed(seed)).images[0])
         
         return self.images
         
