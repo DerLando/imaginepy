@@ -63,7 +63,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(add_help=True)
     parser.add_argument('-p', '--prompt', help="The text prompt to generate an image for", required=True)
     parser.add_argument('-s', '--seed', help="The initial seed to use")
-    parser.add_argument('-n', '--steps', type=int, help="The number of steps to run the generation for", choices=range(10, 60), default=20)
+    parser.add_argument('-n', '--steps', type=int, help="The number of steps to run the generation for", choices=range(10, 120), default=20)
     parser.add_argument('-c', '--count', type=int, help="The number of images to generate", choices=[1, 2, 3, 4], default=1)
 
     args = parser.parse_args()
