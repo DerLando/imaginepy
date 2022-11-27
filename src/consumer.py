@@ -55,6 +55,9 @@ class Consumer(object):
             seed = TorchWorker.create_seed()
         args['seed'] = seed
         args['steps'] = steps
+
+        print(f"Consumer putting {args} for prompt {prompt}")
+
         return put(self._prompt_url(prompt), json=args).json()
 
 
