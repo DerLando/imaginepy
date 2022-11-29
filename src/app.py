@@ -6,6 +6,8 @@ import base64
 from io import BytesIO, StringIO
 import logging
 import sys
+from flask_lt import run_with_lt
+import argparse
 
 DEBUG = False
 WORKER = None
@@ -15,11 +17,11 @@ app = Flask(__name__)
 api = Api(app)
 
 # define a parser for the arguments to the api
-parser = reqparse.RequestParser()
+req_parser = reqparse.RequestParser()
 # parser.add_argument("prompt", type=str, help="The prompt to execute", required=True)
-parser.add_argument("steps", type=int, help="The number of steps to execute", default=50)
-parser.add_argument("size", type=int, help="The size of the finished image, size x size", default=512)
-parser.add_argument("seed", type=int, help="The seed to initialize the random generator", default=42)
+req_parser.add_argument("steps", type=int, help="The number of steps to execute", default=50)
+req_parser.add_argument("size", type=int, help="The size of the finished image, size x size", default=512)
+req_parser.add_argument("seed", type=int, help="The seed to initialize the random generator", default=42)
 
 def encode_image(image):
     """
@@ -46,11 +48,11 @@ def generate_image(prompt, steps=10, seed=42, debug=False):
 
 class Imagination(Resource):
     def get(self, prompt):
-        args = parser.parse_args(strict=True)
+        args = req_parser.parse_args(strict=True)
         return args
 
     def put(self, prompt):
-        args = parser.parse_args()
+        args = req_parser.parse_args()
         args['prompt'] = prompt
         args['image'] = generate_image(prompt, steps=args['steps'], seed=args['seed'], debug=DEBUG)
         args['filename'] = create_image_filename(prompt, args['seed'])
@@ -61,10 +63,18 @@ api.add_resource(Imagination, '/<string:prompt>')
 
 if __name__ == '__main__':
 
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-d', '--debug', help="Run server in debug mode", default=False, action='store_true')
+    parser.add_argument('-lt', help="Run server with localtunnel", default=False, action='store_true')
+    args = parser.parse_args()
+    
     # any cmd arg is explicity parsed as running in debug mode
-    if len(sys.argv) > 1:
+    if args.debug:
         DEBUG = True
     else:
         WORKER = TorchWorker()
+
+    if args.lt:
+        run_with_lt(app, "Lando")
 
     app.run(debug=DEBUG)

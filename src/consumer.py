@@ -68,12 +68,15 @@ if __name__ == "__main__":
     parser.add_argument('-s', '--seed', help="The initial seed to use")
     parser.add_argument('-n', '--steps', type=int, help="The number of steps to run the generation for", choices=range(10, 120), default=20)
     parser.add_argument('-c', '--count', type=int, help="The number of images to generate", choices=[1, 2, 3, 4], default=1)
+    parser.add_argument('-lt', '--local-tunnel', help="Connect to local tunnel address", type=str, required=False)
 
     args = parser.parse_args()
-    if args.prompt == None:
-        sys.exit(1)
 
-    consumer = Consumer()
+    if args.__contains__("local_tunnel"):
+        consumer = Consumer(args.local_tunnel)
+    else:
+        consumer = Consumer()
+    
     result = consumer.generate_image(args.prompt, args.steps, args.seed)
     for k, v in result.items():
         if k == 'image':

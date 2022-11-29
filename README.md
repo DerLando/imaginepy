@@ -10,6 +10,7 @@ We depend on quite a few libraries to make this work. The following dependencies
   - `diffusers`
   - `flask`
   - `flask-restful`
+  - `python-dotenv`
 
 Additionally we also use a few cli utilities
 
@@ -25,6 +26,7 @@ pip3 install torch torchvision torchaudio --extra-index-url https://download.pyt
 pip install --upgrade diffusers[torch]
 pip install flask
 pip install flask-restful
+pip install python-dotenv
 ```
   
 ## Usage
@@ -34,7 +36,7 @@ To make this work, create a `.env` file at the root level and have it expose the
 
 ```dotenv
 # ip and port of the server to run
-SERVER_IP = 127.0.0.1
+SERVER_IP = http://127.0.0.1
 SERVER_PORT = 5000
 
 # path to your local version of the diffursers model
