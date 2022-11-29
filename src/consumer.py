@@ -46,7 +46,7 @@ class Consumer(object):
     def _prompt_url(self, prompt):
         return f"{self.url}{prompt}"
 
-    def generate_image(self, prompt, steps=10, seed=None):
+    def generate_image(self, prompt, steps=10, seed=None, size=512):
         """
         Generate an image with the given number of generation steps
         """
@@ -55,6 +55,7 @@ class Consumer(object):
             seed = TorchWorker.create_seed()
         args['seed'] = seed
         args['steps'] = steps
+        args['size'] = size
 
         print(f"Consumer putting {args} for prompt {prompt}")
 
@@ -69,6 +70,7 @@ if __name__ == "__main__":
     parser.add_argument('-n', '--steps', type=int, help="The number of steps to run the generation for", choices=range(10, 120), default=20)
     parser.add_argument('-c', '--count', type=int, help="The number of images to generate", choices=[1, 2, 3, 4], default=1)
     parser.add_argument('-lt', '--local-tunnel', help="Connect to local tunnel address", type=str, required=False)
+    parser.add_argument('-w', '--size', type=int, help="Size of the final image, must be divisible by 8", default=512)
 
     args = parser.parse_args()
 
@@ -77,13 +79,15 @@ if __name__ == "__main__":
     else:
         consumer = Consumer()
     
-    result = consumer.generate_image(args.prompt, args.steps, args.seed)
-    for k, v in result.items():
-        if k == 'image':
-            image = decode_image(v)
-            filepath = f"./generated/{result['filename']}"
-            filepath = os.path.abspath(filepath)
-            print(filepath)
-            image.save(filepath)
-        else:
-            print(k, ": ", v)
+    for _ in range(args.count):
+    
+        result = consumer.generate_image(args.prompt, args.steps, args.seed, args.size)
+        for k, v in result.items():
+            if k == 'image':
+                image = decode_image(v)
+                filepath = f"./generated/{result['filename']}"
+                filepath = os.path.abspath(filepath)
+                print(filepath)
+                image.save(filepath)
+            else:
+                print(k, ": ", v)

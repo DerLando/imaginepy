@@ -33,7 +33,7 @@ class TorchWorker(object):
         self.pipeline = self.pipeline.to("cuda")
         self.pipeline.enable_attention_slicing()
         
-    def execute_prompt(self, prompt=None, image_count=None, seeds=None, steps=None):
+    def execute_prompt(self, prompt=None, image_count=None, seeds=None, steps=None, size=512):
         """
         Execute the given prompt    
         """
@@ -63,7 +63,7 @@ class TorchWorker(object):
         # itererate over seeds and create images
         for seed in self.seeds:
                         
-            self.images.append(self.pipeline(self.prompt, num_inference_steps=self.steps, generator=torch.Generator(device="cuda").manual_seed(seed)).images[0])
+            self.images.append(self.pipeline(self.prompt, height=size, width=size, num_inference_steps=self.steps, generator=torch.Generator(device="cuda").manual_seed(seed)).images[0])
         
         return self.images
         
@@ -73,7 +73,7 @@ class TorchWorker(object):
         
         
     def _seed(self):
-        self.seeds = [create_seed() for _ in range(self.image_count)]
+        self.seeds = [self.create_seed() for _ in range(self.image_count)]
         
         
 if __name__ == "__main__":

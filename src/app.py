@@ -37,12 +37,12 @@ def encode_image(image):
 def create_image_filename(prompt, seed):
     return f"{prompt.replace(' ', '_')}_{seed}_.png"
     
-def generate_image(prompt, steps=10, seed=42, debug=False):
+def generate_image(prompt, steps=10, seed=42, debug=False, size=512):
     if debug:
         image = Image.open("./images/debug_image.png")
         
     else:
-        image = WORKER.execute_prompt(prompt, steps=steps, seeds=[seed])[0]
+        image = WORKER.execute_prompt(prompt, steps=steps, seeds=[seed], size=size)[0]
         
     return encode_image(image)
 
@@ -54,7 +54,7 @@ class Imagination(Resource):
     def put(self, prompt):
         args = req_parser.parse_args()
         args['prompt'] = prompt
-        args['image'] = generate_image(prompt, steps=args['steps'], seed=args['seed'], debug=DEBUG)
+        args['image'] = generate_image(prompt, steps=args['steps'], seed=args['seed'], debug=DEBUG, size=args['size'])
         args['filename'] = create_image_filename(prompt, args['seed'])
         return args
 
