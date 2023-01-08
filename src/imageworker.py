@@ -1,4 +1,4 @@
-from PIL import Image
+from PIL import Image, ImageFilter
 
 ALPHA_TOLERANCE = 10
 
@@ -28,6 +28,7 @@ class ImageWorker():
                    color = (255, 255, 255, 255)
                 data[x, y] = color
                 
+        mask = mask.filter(ImageFilter.GaussianBlur(13))
         return mask
         
 if __name__ == "__main__":
