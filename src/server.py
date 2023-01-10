@@ -1,4 +1,5 @@
 from torchworker import TorchWorker
+from inpaintingworker import InpaintingWorker
 import sys
 
 

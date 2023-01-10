@@ -89,6 +89,7 @@ if __name__ == "__main__":
     test_image = Image.open("./images/debug_input.png")
     images = worker.execute_prompt(test_image, prompt="A building on the moon, 8k, photography 55mm lens", steps = 20, strength = 0.8)
 
+    # TODO: Implement this worker in the server-client architecture to finalize it...
 
     print(f"generated {len(images)} images...")    
         
